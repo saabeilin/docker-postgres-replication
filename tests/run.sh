@@ -6,7 +6,7 @@ image="$1"
 export POSTGRES_USER='postgres'
 export POSTGRES_PASSWORD=''
 export POSTGRES_DB='postgres'
-export REPLICATION_PASSWORD='whatever'
+export POSTGRES_REPLICATION_PASSWORD='whatever'
 
 
 psql() {
@@ -44,11 +44,11 @@ poll() {
     set -e
 }
 
-mid=$(docker run -d -e REPLICATION_PASSWORD=$REPLICATION_PASSWORD --name postgres-master "$image")
-sid=$(docker run -d -e REPLICATION_PASSWORD=$REPLICATION_PASSWORD --name postgres-standby \
+mid=$(docker run -d -e POSTGRES_REPLICATION_PASSWORD=$POSTGRES_REPLICATION_PASSWORD --name postgres-master "$image")
+sid=$(docker run -d -e POSTGRES_REPLICATION_PASSWORD=$POSTGRES_REPLICATION_PASSWORD --name postgres-standby \
              --link postgres-master \
              -e POSTGRES_MASTER_SERVICE_HOST=postgres-master \
-             -e REPLICATION_ROLE=standby \
+             -e POSTGRES_REPLICATION_ROLE=standby \
              -t "$image")
 trap "docker rm -f $mid $sid > /dev/null" EXIT
 

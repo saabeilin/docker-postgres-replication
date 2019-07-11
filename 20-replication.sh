@@ -1,10 +1,10 @@
 #!/bin/bash
 set -e
 
-if [ $REPLICATION_ROLE = "master" ]; then
-    PGPASSWORD=${POSTGRES_PASSWORD:-""} psql -U postgres -c "CREATE ROLE $REPLICATION_USER WITH REPLICATION PASSWORD '$REPLICATION_PASSWORD' LOGIN"
+if [ $POSTGRES_REPLICATION_ROLE = "master" ]; then
+    PGPASSWORD=${POSTGRES_PASSWORD:-""} psql -U postgres -c "CREATE ROLE $POSTGRES_REPLICATION_USER WITH REPLICATION PASSWORD '$POSTGRES_REPLICATION_PASSWORD' LOGIN"
 
-elif [ $REPLICATION_ROLE = "standby" ]; then
+elif [ $POSTGRES_REPLICATION_ROLE = "standby" ]; then
     # stop postgres instance and reset PGDATA,
     # confs will be copied by pg_basebackup
     pg_ctl -D "$PGDATA" -m fast -w stop
@@ -13,20 +13,20 @@ elif [ $REPLICATION_ROLE = "standby" ]; then
 
     # wait for master to get up
     until \
-        PGPASSWORD=${REPLICATION_PASSWORD:-""} pg_isready \
+        PGPASSWORD=${POSTGRES_REPLICATION_PASSWORD:-""} pg_isready \
         -h $POSTGRES_MASTER_SERVICE_HOST \
         -p $POSTGRES_MASTER_SERVICE_PORT \
-        -U $REPLICATION_USER \
+        -U $POSTGRES_REPLICATION_USER \
         -d $POSTGRES_DB; do
         echo "waiting for master $POSTGRES_MASTER_SERVICE_HOST:$POSTGRES_MASTER_SERVICE_PORT..."
         sleep 1
     done
 
-    PGPASSWORD=${REPLICATION_PASSWORD:-""} pg_basebackup \
+    PGPASSWORD=${POSTGRES_REPLICATION_PASSWORD:-""} pg_basebackup \
          --write-recovery-conf \
          --pgdata="$PGDATA" \
          --wal-method=fetch \
-         --username=$REPLICATION_USER \
+         --username=$POSTGRES_REPLICATION_USER \
          --host=$POSTGRES_MASTER_SERVICE_HOST \
          --port=$POSTGRES_MASTER_SERVICE_PORT \
          --progress \
@@ -38,4 +38,4 @@ elif [ $REPLICATION_ROLE = "standby" ]; then
          -w start
 fi
 
-echo [*] $REPLICATION_ROLE instance configured!
+echo [*] $POSTGRES_REPLICATION_ROLE instance configured!

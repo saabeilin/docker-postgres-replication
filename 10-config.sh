@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo [*] configuring $REPLICATION_ROLE instance
+echo [*] configuring $POSTGRES_REPLICATION_ROLE instance
 
 echo "max_connections = $MAX_CONNECTIONS" >> "$PGDATA/postgresql.conf"
 
@@ -13,8 +13,8 @@ echo "max_wal_senders = $MAX_WAL_SENDERS" >> "$PGDATA/postgresql.conf"
 # standby settings, ignored on master
 echo "hot_standby = on" >> "$PGDATA/postgresql.conf"
 
-if [ x$REPLICATION_PASSWORD = "x" ]; then
-    echo "host replication $REPLICATION_USER 0.0.0.0/0 trust" >> "$PGDATA/pg_hba.conf"
+if [ x$POSTGRES_REPLICATION_PASSWORD = "x" ]; then
+    echo "host replication $POSTGRES_REPLICATION_USER 0.0.0.0/0 trust" >> "$PGDATA/pg_hba.conf"
 else
-    echo "host replication $REPLICATION_USER 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf"
+    echo "host replication $POSTGRES_REPLICATION_USER 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf"
 fi

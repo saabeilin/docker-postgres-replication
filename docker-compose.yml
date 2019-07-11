@@ -13,7 +13,7 @@ services:
       - 5432:5432
     environment:
       - POSTGRES_PASSWORD=masterpass
-#      - REPLICATION_PASSWORD=replicationPass
+#      - POSTGRES_REPLICATION_PASSWORD=replicationPass
 
 
   postgres-standby:
@@ -25,9 +25,9 @@ services:
     depends_on:
       - postgres-master
     environment:
-      - REPLICATION_ROLE=standby
+      - POSTGRES_REPLICATION_ROLE=standby
       - POSTGRES_MASTER_SERVICE_HOST=postgres-master
-#      - REPLICATION_PASSWORD=replicationPass
+#      - POSTGRES_REPLICATION_PASSWORD=replicationPass
 
 volumes:
   postgres-master:

@@ -46,7 +46,7 @@ Then Postgres standby(s):
 ```
 docker run -p 127.0.0.1:5433:5432 --link postgres-master \
            -e POSTGRES_MASTER_SERVICE_HOST=postgres-master \
-           -e REPLICATION_ROLE=standby \
+           -e POSTGRES_REPLICATION_ROLE=standby \
            -t nebirhos/postgres-replication
 ```
 
