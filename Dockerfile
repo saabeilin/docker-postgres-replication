@@ -1,7 +1,7 @@
 # -*- mode: conf -*-
-FROM postgres:9.6
+FROM postgres:11.4-alpine
 
-MAINTAINER me@nebirhos.com
+MAINTAINER saabeilin@gmail.com
 
 # common settings
 ENV MAX_CONNECTIONS 500

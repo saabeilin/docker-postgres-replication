@@ -25,7 +25,7 @@ elif [ $REPLICATION_ROLE = "slave" ]; then
     pg_basebackup \
          --write-recovery-conf \
          --pgdata="$PGDATA" \
-         --xlog-method=fetch \
+         --wal-method=fetch \
          --username=$REPLICATION_USER \
          --host=$POSTGRES_MASTER_SERVICE_HOST \
          --port=$POSTGRES_MASTER_SERVICE_PORT \
