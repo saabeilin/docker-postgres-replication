@@ -1,14 +1,30 @@
-postgres-slave:
-  image: "nebirhos/postgres-replication"
-  ports:
-    - 5433:5432
-  links:
-    - postgres-master
-  environment:
-    REPLICATION_ROLE: slave
-    POSTGRES_MASTER_SERVICE_HOST: postgres-master
+version: '3.5'
 
-postgres-master:
-  image: "nebirhos/postgres-replication"
-  ports:
-    - 5432:5432
+services:
+
+  postgres-master:
+    image: saabeilin/postgres-replication:${IMAGE_TAG:-dev}
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - postgres-master:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+
+  postgres-standby:
+    image: saabeilin/postgres-replication:${IMAGE_TAG:-dev}
+    volumes:
+      - postgres-standby:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+    depends_on:
+      - postgres-master
+    environment:
+      REPLICATION_ROLE: slave
+      POSTGRES_MASTER_SERVICE_HOST: postgres-master
+
+volumes:
+  postgres-master:
+  postgres-standby:
