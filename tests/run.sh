@@ -27,7 +27,7 @@ poll() {
     while true
     do
         sleep 2
-        psql master '\l' > /dev/null 2> /dev/null && psql slave '\l' > /dev/null 2> /dev/null
+        psql master '\l' > /dev/null 2> /dev/null && psql standby '\l' > /dev/null 2> /dev/null
         if [ $? -eq 0 ]; then
             break
         else
@@ -43,10 +43,10 @@ poll() {
 }
 
 mid=$(docker run -d --name postgres-master "$image")
-sid=$(docker run -d --name postgres-slave \
+sid=$(docker run -d --name postgres-standby \
              --link postgres-master \
              -e POSTGRES_MASTER_SERVICE_HOST=postgres-master \
-             -e REPLICATION_ROLE=slave \
+             -e REPLICATION_ROLE=standby \
              -t "$image")
 trap "docker rm -f $mid $sid > /dev/null" EXIT
 
@@ -54,7 +54,7 @@ poll 3 times
 psql master "CREATE TABLE replication_test (a INT, b INT, c VARCHAR(255))"
 psql master "INSERT INTO replication_test VALUES (1, 2, 'it works')"
 
-output=$(psql slave "SELECT c from replication_test")
+output=$(psql standby "SELECT c from replication_test")
 if [ "$output" == 'it works' ]; then
     echo "OK"
     exit 0

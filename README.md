@@ -41,12 +41,12 @@ docker run -p 127.0.0.1:5432:5432 --name postgres-master nebirhos/postgres-repli
 ```
 
 
-Then Postgres slave(s):
+Then Postgres standby(s):
 
 ```
 docker run -p 127.0.0.1:5433:5432 --link postgres-master \
            -e POSTGRES_MASTER_SERVICE_HOST=postgres-master \
-           -e REPLICATION_ROLE=slave \
+           -e REPLICATION_ROLE=standby \
            -t nebirhos/postgres-replication
 ```
 

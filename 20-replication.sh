@@ -4,7 +4,7 @@ set -e
 if [ $REPLICATION_ROLE = "master" ]; then
     PGPASSWORD=${POSTGRES_PASSWORD:-""} psql -U postgres -c "CREATE ROLE $REPLICATION_USER WITH REPLICATION PASSWORD '$REPLICATION_PASSWORD' LOGIN"
 
-elif [ $REPLICATION_ROLE = "slave" ]; then
+elif [ $REPLICATION_ROLE = "standby" ]; then
     # stop postgres instance and reset PGDATA,
     # confs will be copied by pg_basebackup
     pg_ctl -D "$PGDATA" -m fast -w stop

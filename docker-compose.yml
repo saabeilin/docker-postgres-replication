@@ -25,7 +25,7 @@ services:
     depends_on:
       - postgres-master
     environment:
-      - REPLICATION_ROLE=slave
+      - REPLICATION_ROLE=standby
       - POSTGRES_MASTER_SERVICE_HOST=postgres-master
       - REPLICATION_PASSWORD=replicationPass
 
