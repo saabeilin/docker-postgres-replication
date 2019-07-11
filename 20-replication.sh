@@ -22,7 +22,7 @@ elif [ $REPLICATION_ROLE = "standby" ]; then
         sleep 1
     done
 
-    pg_basebackup \
+    PGPASSWORD=${REPLICATION_PASSWORD:-""} pg_basebackup \
          --write-recovery-conf \
          --pgdata="$PGDATA" \
          --wal-method=fetch \
