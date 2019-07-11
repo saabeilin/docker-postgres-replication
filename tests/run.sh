@@ -6,6 +6,8 @@ image="$1"
 export POSTGRES_USER='postgres'
 export POSTGRES_PASSWORD=''
 export POSTGRES_DB='postgres'
+export REPLICATION_PASSWORD='whatever'
+
 
 psql() {
     role="$1"
@@ -42,8 +44,8 @@ poll() {
     set -e
 }
 
-mid=$(docker run -d --name postgres-master "$image")
-sid=$(docker run -d --name postgres-standby \
+mid=$(docker run -d -e REPLICATION_PASSWORD=$REPLICATION_PASSWORD --name postgres-master "$image")
+sid=$(docker run -d -e REPLICATION_PASSWORD=$REPLICATION_PASSWORD --name postgres-standby \
              --link postgres-master \
              -e POSTGRES_MASTER_SERVICE_HOST=postgres-master \
              -e REPLICATION_ROLE=standby \
