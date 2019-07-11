@@ -11,6 +11,9 @@ services:
       - postgres-master:/var/lib/postgresql/data
     ports:
       - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=masterpass
+      - REPLICATION_PASSWORD=replicationPass
 
 
   postgres-standby:
@@ -22,8 +25,9 @@ services:
     depends_on:
       - postgres-master
     environment:
-      REPLICATION_ROLE: slave
-      POSTGRES_MASTER_SERVICE_HOST: postgres-master
+      - REPLICATION_ROLE=slave
+      - POSTGRES_MASTER_SERVICE_HOST=postgres-master
+      - REPLICATION_PASSWORD=replicationPass
 
 volumes:
   postgres-master:
